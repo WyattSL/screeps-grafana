@@ -18,6 +18,7 @@
 import fetch from 'node-fetch';
 import StatsD from 'node-statsd';
 import zlib from 'zlib';
+import { ScreepsAPI } from "screeps-api";
 
 export default class ScreepsStatsd {
   _host;
@@ -27,6 +28,7 @@ export default class ScreepsStatsd {
   _graphite;
   _token;
   _success;
+  api;
   constructor(host, email, password, shard, graphite) {
     this._host = host;
     this._email = email;
@@ -36,9 +38,36 @@ export default class ScreepsStatsd {
     this._client = new StatsD({host: this._graphite});
   }
   run( string ) {
-    this.signin();
+    //this.signin();
 
-    setInterval(() => this.loop(), 15000);
+    //setInterval(() => this.loop(), 15000);
+
+    this.api = new ScreepsAPI({
+      protocol: "https",
+      hostname: this._host,
+      path: "/",
+      port: 21025,
+    })
+
+    this.api.auth(this._email, this._password);
+
+    this.api.socket.connect().then(() => {
+      console.log("Connected to Screeps API");
+      this.api.socket.on('disconnected', () => {
+        this.api.socket.connect();
+      })
+      this.api.socket.subscribe('console', (event) => {
+        let msgs = event.data.messages.log;
+        for (let msg of msgs) {
+          if (!msg.startsWith("stat")) continue;
+          let data = JSON.parse(msg.substring(4));
+          report(data, "con");
+        }
+      })
+      this.api.socket.subscribe('cpu', (event) => {
+        report(event.data, "cpu");
+      })
+    })
   }
 
   loop() {

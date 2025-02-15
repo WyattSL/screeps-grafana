@@ -30,7 +30,10 @@
   },
   "keywords": [],
   "dependencies": {
-    "node-statsd": "^0.1.1",
-    "node-fetch": "^3.2.4"
+    "node-fetch": "^3.2.4",
+    "node-statsd": "^0.1.1"
+  },
+  "devDependencies": {
+    "screeps-api": "^1.16.1"
   }
 }
