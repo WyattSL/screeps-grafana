@@ -67,7 +67,7 @@ export default class ScreepsStatsd {
           for (let msg of msgs) {
             if (!msg.startsWith("stat")) continue;
             let data = JSON.parse(msg.substring(4));
-            console.log(`Stats ${data}`);
+            console.log(`Stats`,data);
             this.report(data, "con.");
           }
         })
