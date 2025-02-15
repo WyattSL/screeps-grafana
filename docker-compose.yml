@@ -3,6 +3,7 @@ volumes:
   graphite_conf:
   graphite_data:
   grafana_data:
+  statsd_conf:
 services:
   node:
     build:
@@ -18,6 +19,8 @@ services:
     image: ennexa/statsd
     links: 
      - graphite
+    volumes:
+      - statsd_conf:/etc/statsd
   graphite: 
     image: ennexa/graphite
     restart: always
