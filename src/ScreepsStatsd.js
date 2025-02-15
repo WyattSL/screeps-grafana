@@ -57,15 +57,21 @@ export default class ScreepsStatsd {
         this.api.socket.on('disconnected', () => {
           this.api.socket.connect();
         })
+        let first = false;
         this.api.socket.subscribe('console', (event) => {
           let msgs = event.data.messages.log;
+          if (first == false) {
+            console.log(`First messages:`,msgs)
+          }
           for (let msg of msgs) {
             if (!msg.startsWith("stat")) continue;
             let data = JSON.parse(msg.substring(4));
+            console.log(`Stats ${data}`);
             this.report(data, "con.");
           }
         })
         this.api.socket.subscribe('cpu', (event) => {
+          console.log(`CPU `,event.data);
           this.report(event.data, "cpu.");
         })
       })
