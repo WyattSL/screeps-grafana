@@ -62,6 +62,7 @@ export default class ScreepsStatsd {
           let msgs = event.data.messages.log;
           if (first == false) {
             console.log(`First messages:`,msgs)
+            first = true;
           }
           for (let msg of msgs) {
             if (!msg.startsWith("stat")) continue;
