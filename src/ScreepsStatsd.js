@@ -43,7 +43,7 @@ export default class ScreepsStatsd {
     //setInterval(() => this.loop(), 15000);
 
     this.api = new ScreepsAPI({
-      protocol: "https",
+      protocol: "http",
       hostname: this._host,
       path: "/",
       port: 21025,
