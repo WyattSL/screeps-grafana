@@ -50,25 +50,26 @@ export default class ScreepsStatsd {
     })
 
     console.log(`Authenticating`);
-    console.log(`Auth result:`,this.api.auth(this._email, this._password));
-
-    this.api.socket.connect().then(() => {
-      console.log("Connected to Screeps API");
-      this.api.socket.on('disconnected', () => {
-        this.api.socket.connect();
+    this.api.auth(this._email, this._password).then((a,b) => {
+      console.log(`Auth result:`,a,b)
+      this.api.socket.connect().then(() => {
+        console.log("Connected to Screeps API");
+        this.api.socket.on('disconnected', () => {
+          this.api.socket.connect();
+        })
+        this.api.socket.subscribe('console', (event) => {
+          let msgs = event.data.messages.log;
+          for (let msg of msgs) {
+            if (!msg.startsWith("stat")) continue;
+            let data = JSON.parse(msg.substring(4));
+            report(data, "con");
+          }
+        })
+        this.api.socket.subscribe('cpu', (event) => {
+          report(event.data, "cpu");
+        })
       })
-      this.api.socket.subscribe('console', (event) => {
-        let msgs = event.data.messages.log;
-        for (let msg of msgs) {
-          if (!msg.startsWith("stat")) continue;
-          let data = JSON.parse(msg.substring(4));
-          report(data, "con");
-        }
-      })
-      this.api.socket.subscribe('cpu', (event) => {
-        report(event.data, "cpu");
-      })
-    })
+    });
   }
 
   loop() {
