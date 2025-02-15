@@ -19,6 +19,8 @@ services:
     image: ennexa/statsd
     links: 
      - graphite
+    ports:
+     - "8126:8126"
     volumes:
       - statsd_conf:/etc/statsd
   graphite: 
