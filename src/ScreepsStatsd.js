@@ -49,7 +49,8 @@ export default class ScreepsStatsd {
       port: 21025,
     })
 
-    this.api.auth(this._email, this._password);
+    console.log(`Authenticating`);
+    console.log(`Auth result:`,this.api.auth(this._email, this._password));
 
     this.api.socket.connect().then(() => {
       console.log("Connected to Screeps API");
