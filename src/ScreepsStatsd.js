@@ -62,11 +62,11 @@ export default class ScreepsStatsd {
           for (let msg of msgs) {
             if (!msg.startsWith("stat")) continue;
             let data = JSON.parse(msg.substring(4));
-            report(data, "con");
+            this.report(data, "con");
           }
         })
         this.api.socket.subscribe('cpu', (event) => {
-          report(event.data, "cpu");
+          this.report(event.data, "cpu");
         })
       })
     });
